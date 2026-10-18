@@ -24,6 +24,9 @@ keystore.properties
 # Claude / tarefas locais
 .claude/
 
+# Graphify (grafo versionado; cache local nao)
+graphify-out/cache/
+
 # OS
 .DS_Store
 Thumbs.db

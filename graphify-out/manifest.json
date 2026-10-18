@@ -1,0 +1,158 @@
+{
+  "app/build.gradle.kts": {
+    "mtime": 1792328010.6479216,
+    "seen": 1792330279.507791,
+    "ast_hash": "7c73ac8f9602f7709532b704e6fc74f6",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/MainActivity.kt": {
+    "mtime": 1792324561.8033688,
+    "seen": 1792330279.5078244,
+    "ast_hash": "b9eb181f127fcb5b001189a47f93d658",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/data/RokuRepository.kt": {
+    "mtime": 1792327735.1756988,
+    "seen": 1792330279.50783,
+    "ast_hash": "45955d312334a55ae16fde0574f59e8a",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/model/Models.kt": {
+    "mtime": 1792324367.8626404,
+    "seen": 1792330279.5078347,
+    "ast_hash": "80a1257d209de4d56e8e10a1f8fff6f0",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/model/RemoteKey.kt": {
+    "mtime": 1792324360.8864453,
+    "seen": 1792330279.5078447,
+    "ast_hash": "f6166d4699cc3ccdf9b71a8d7414582a",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/net/EcpClient.kt": {
+    "mtime": 1792327747.071848,
+    "seen": 1792330279.5078497,
+    "ast_hash": "8045d09ced97a6b4bdf67b580ac0d861",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/net/RokuXml.kt": {
+    "mtime": 1792324394.0887814,
+    "seen": 1792330279.5078561,
+    "ast_hash": "b0abb18518ccb0acd3e1a0181d974595",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/net/SsdpDiscovery.kt": {
+    "mtime": 1792327724.937034,
+    "seen": 1792330279.5078604,
+    "ast_hash": "98f16929713f4f56ed93c12a8554d33a",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/net/WakeOnLan.kt": {
+    "mtime": 1792324415.6256173,
+    "seen": 1792330279.5078661,
+    "ast_hash": "ce35eb123606adf42a07283d35b90469",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/AppsScreen.kt": {
+    "mtime": 1792327950.7934854,
+    "seen": 1792330279.5080564,
+    "ast_hash": "c132a9a33787c1c7edd7637616951968",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/ConnectScreen.kt": {
+    "mtime": 1792328391.3764455,
+    "seen": 1792330279.508064,
+    "ast_hash": "eb8804c70c280e9b54f467321e2ea9bf",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/KeyboardScreen.kt": {
+    "mtime": 1792324528.6641848,
+    "seen": 1792330279.5080724,
+    "ast_hash": "d5ad13d797f8e97a6ef527b51823939a",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/RemoteApp.kt": {
+    "mtime": 1792328384.392978,
+    "seen": 1792330279.5080817,
+    "ast_hash": "50b7640aff9464192b333541a9b3266b",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/RemoteControls.kt": {
+    "mtime": 1792327842.4529538,
+    "seen": 1792330279.50809,
+    "ast_hash": "29ff1a33bec3eb018adba9272401a235",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/RemoteViewModel.kt": {
+    "mtime": 1792327767.0919254,
+    "seen": 1792330279.5080957,
+    "ast_hash": "6c7528cee64d12a30d8a089fae7a4aaa",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/TvScreen.kt": {
+    "mtime": 1792324518.1423254,
+    "seen": 1792330279.5081053,
+    "ast_hash": "daa1d52835c4061d1f55b1908167b6d0",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/theme/Color.kt": {
+    "mtime": 1792327684.4292357,
+    "seen": 1792330279.5081134,
+    "ast_hash": "f4e2eb3a2dcd32173fda8374e06fc975",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/theme/Theme.kt": {
+    "mtime": 1792327711.8301034,
+    "seen": 1792330279.5081203,
+    "ast_hash": "fc29fb78113fa0b838d6f86c6f72b6e0",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/nathalia/rokuremote/ui/theme/Type.kt": {
+    "mtime": 1792327695.8307383,
+    "seen": 1792330279.508127,
+    "ast_hash": "c69bf47993e5776b6f931f4aa5b10938",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/com/nathalia/rokuremote/EcpClientTest.kt": {
+    "mtime": 1792324615.9158933,
+    "seen": 1792330279.508134,
+    "ast_hash": "6c27ab8bec16f2b508d09873c8978b04",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/com/nathalia/rokuremote/RokuXmlTest.kt": {
+    "mtime": 1792324577.0233011,
+    "seen": 1792330279.5081408,
+    "ast_hash": "c0ab936df6c5814929fced95046bd4f1",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/com/nathalia/rokuremote/WakeOnLanTest.kt": {
+    "mtime": 1792324598.0825765,
+    "seen": 1792330279.5081508,
+    "ast_hash": "c0c1d75c2c2fbb61f5852a486ca891c1",
+    "semantic_hash": ""
+  },
+  "build.gradle.kts": {
+    "mtime": 1792324269.3081012,
+    "seen": 1792330279.5081642,
+    "ast_hash": "0d7586f63bb33a6584f40641048a1572",
+    "semantic_hash": ""
+  },
+  "gradlew": {
+    "mtime": 1792325941.1877654,
+    "seen": 1792330279.50817,
+    "ast_hash": "f092910dfa8e47c5a37a452c3f6baf8a",
+    "semantic_hash": ""
+  },
+  "settings.gradle.kts": {
+    "mtime": 1792324253.412557,
+    "seen": 1792330279.5081766,
+    "ast_hash": "cf95b22dc421871cd6f4f1e97d7c80ef",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1792330090.9128692,
+    "seen": 1792330279.5081832,
+    "ast_hash": "7d3d754e98b75e7d189372222399ac62",
+    "semantic_hash": ""
+  }
+}
