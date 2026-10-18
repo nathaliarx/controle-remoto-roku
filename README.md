@@ -1,89 +1,120 @@
-# Controle Roku — Android
+# RokuControl
 
-Controle remoto Android nativo (Kotlin + Jetpack Compose) para a **SEMP Roku TV 43R6500**,
-comunicando pela rede local via **SSDP** (descoberta) e **Roku ECP** (comandos/consultas na porta 8060).
-Projeto independente de qualquer canal Roku; não usa BrightScript.
+Controle remoto Android nativo para Roku TV, operando na rede local via SSDP (descoberta) e
+Roku External Control Protocol (ECP, HTTP na porta 8060). Projeto independente de qualquer canal
+Roku e sem BrightScript.
 
-## Dispositivo-alvo (confirmado por ECP + doc oficial)
+Validado contra uma SEMP Roku TV 43R6500 (Roku OS 16.0.4, tuner ISDB-T).
 
-| Item | Valor | Método |
-|---|---|---|
-| Modelo | SEMP Roku TV 43R6500 (H109X, região BR) | `query/device-info` |
-| Roku OS | 16.0.4 | `query/device-info` |
-| Tuner | ISDB-T (TV digital aberta BR) | `query/device-info` |
-| Rede | Ethernet, IP 192.168.0.2 | `query/device-info` + SSDP |
-| Modo dev | habilitado | `developer-enabled=true` |
-| "Controle por apps móveis" | habilitado | `keypress`/`query/tv-channels` responderam 200 |
-| Wake-on-WLAN | suportado | `supports-wake-on-wlan=true` |
-| Private listening | suportado, **não documentado na ECP** | `audio-device`: `wifi-remote-sas,mobile-sas` |
+## Stack
 
-## Matriz de capacidades
-
-Legenda: ✅ testado nesta TV · 🟡 documentado/anunciado, não testado · ⛔ não suportado · 🔬 exige engenharia reversa
-
-| Recurso | Endpoint/método | Status | Observação |
-|---|---|---|---|
-| Descoberta SSDP | `M-SEARCH ST roku:ecp` | ✅ | achou 192.168.0.2 |
-| Info do dispositivo | `GET /query/device-info` | ✅ | |
-| Lista de apps | `GET /query/apps` | ✅ | 15 apps + 5 entradas |
-| App ativo | `GET /query/active-app` | ✅ | |
-| Ícones de apps | `GET /query/icon/<id>` | 🟡 | carregado na UI em runtime |
-| Direcional/OK/Back | `POST /keypress/{Up,Down,Left,Right,Select,Back}` | ✅ | |
-| Home | `POST /keypress/Home` | ✅ | |
-| Playback | `POST /keypress/{Play,Rev,Fwd,InstantReplay,Info}` | 🟡 | |
-| Volume/Mute | `POST /keypress/{VolumeUp,VolumeDown,VolumeMute}` | 🟡 | TV suporta |
-| Power Off | `POST /keypress/PowerOff` | 🟡 | |
-| Power On | Wake-on-LAN (magic packet) | 🟡 | ECP não liga a TV desligada |
-| Trocar canal (tuner) | `POST /keypress/{ChannelUp,ChannelDown}` | 🟡 | |
-| Entradas | `POST /keypress/{InputTuner,InputHDMI1..3,InputAV1}` | 🟡 | |
-| Abrir app | `POST /launch/<id>` | 🟡 | |
-| Digitar texto | `POST /keypress/Lit_<char>` | 🟡 | campos de teclado na tela |
-| Enter/Backspace/Busca-voz | `POST /keypress/{Enter,Backspace,Search}` | 🟡 | |
-| Lista TV ao vivo | `GET /query/tv-channels` | ✅ | 30 canais ISDB-T |
-| Find Remote | `POST /keypress/FindRemote` | ⛔ | `supports-find-remote=false` |
-| Ouvir pelo celular | stream SAS (RTP) | 🔬 | fora da ECP; ver seção RE |
-
-> 🟡 = o comando existe no protocolo e a TV deve aceitá-lo, mas ainda não foi validado nesta TV
-> botão a botão. Enviar sem erro HTTP não prova o efeito na tela — a validação é a Etapa 6.
+- Kotlin, Jetpack Compose (Material 3)
+- `minSdk` 24 (Android 7.0), `compileSdk`/`targetSdk` 36 (Android 16)
+- OkHttp (cliente ECP), Coroutines/StateFlow
+- Build com Gradle 8.11.1 / AGP 8.9.1 / Kotlin 2.1.20
 
 ## Arquitetura
 
-- `net/SsdpDiscovery` — descoberta multicast.
-- `net/EcpClient` — cliente HTTP (OkHttp, corrotinas) dos comandos/queries ECP.
-- `net/RokuXml` — parsing dos XML (sem dependência Android, testável em JVM).
-- `net/WakeOnLan` — magic packet para ligar a TV.
-- `data/RokuRepository` — orquestra ECP + SSDP.
-- `ui/RemoteViewModel` — estado (StateFlow), sem bloquear a UI.
-- `ui/*` — Compose: conexão, D-pad/playback/volume/entradas, grade de apps, TV ao vivo, teclado. Tema claro/escuro, háptico.
+| Camada | Componente | Responsabilidade |
+|---|---|---|
+| Rede | `net/SsdpDiscovery` | Descoberta multicast (M-SEARCH `roku:ecp`) com `MulticastLock` |
+| Rede | `net/EcpClient` | Comandos e consultas ECP; retry em falha de rede |
+| Rede | `net/RokuXml` | Parsing dos XML da ECP; sem dependência Android (testável em JVM) |
+| Rede | `net/WakeOnLan` | Magic packet para ligar a TV em standby |
+| Dados | `data/RokuRepository` | Orquestra ECP e SSDP; persiste o último host |
+| Estado | `ui/RemoteViewModel` | `AndroidViewModel`, estado por `StateFlow`, callbacks de erro |
+| UI | `ui/*` | Compose: conexão, controle, apps, TV ao vivo, teclado |
 
-## Build (dev_box)
+Operações de rede rodam em `Dispatchers.IO`; a UI não bloqueia.
 
-Pré-requisitos: imagem Android do dev_box (Android SDK + JDK 17 + Gradle). Gerar o wrapper e compilar:
+## Funcionalidades
 
-```
-devbox.ps1 run controle_remoto bash -c "gradle wrapper --gradle-version 8.11.1 && ./gradlew assembleDebug testDebugUnitTest"
-```
+- Descoberta na rede (SSDP) e entrada manual de IP, com reconexão ao último host (fallback)
+- Direcional, OK, Voltar, Início, opções
+- Reprodução: play/pause, avançar, retroceder, repetição instantânea, info
+- Volume, mudo e desligar; ligar via Wake-on-LAN
+- Troca de entrada: TV ao vivo (tuner), HDMI 1-3, AV; canais acima/abaixo
+- Lista de apps instalados, carregada dinamicamente, com destaque do app ativo e ícones
+- Lista de canais de TV ao vivo
+- Entrada de texto remota (campos de teclado da TV) e acionamento de busca por voz
+- Feedback de erro por callback (mensagem quando um comando não chega à TV)
 
-APK de depuração: `app/build/outputs/apk/debug/app-debug.apk`.
+## Matriz de capacidades
 
-## Instalar no Moto G (Android 16)
+Legenda: Testado = verificado nesta TV; Documentado = previsto no protocolo, não validado botão a botão;
+Nao suportado = indisponível neste hardware; Requer RE = fora da ECP, depende de engenharia reversa.
 
-1. Ative "Depuração USB" (Opções do desenvolvedor) ou use "Instalar apps desconhecidos".
-2. `adb install -r app/build/outputs/apk/debug/app-debug.apk` (ou copie o APK e abra no aparelho).
-3. Conecte o celular na mesma rede Wi-Fi da TV. Abra o app → "Procurar na rede" ou informe `192.168.0.2`.
+| Recurso | Metodo ECP | Situacao |
+|---|---|---|
+| Descoberta | SSDP `ST roku:ecp` | Testado |
+| Informacoes do dispositivo | `GET /query/device-info` | Testado |
+| Lista de apps | `GET /query/apps` | Testado |
+| App ativo | `GET /query/active-app` | Testado |
+| Icones de apps | `GET /query/icon/<id>` | Documentado |
+| Direcional, OK, Voltar, Inicio | `POST /keypress/{Up,Down,Left,Right,Select,Back,Home}` | Testado |
+| Reproducao | `POST /keypress/{Play,Rev,Fwd,InstantReplay,Info}` | Documentado |
+| Volume e mudo | `POST /keypress/{VolumeUp,VolumeDown,VolumeMute}` | Documentado |
+| Desligar | `POST /keypress/PowerOff` | Documentado |
+| Ligar | Wake-on-LAN (magic packet) | Documentado |
+| Troca de canal | `POST /keypress/{ChannelUp,ChannelDown}` | Documentado |
+| Entradas | `POST /keypress/{InputTuner,InputHDMI1..3,InputAV1}` | Documentado |
+| Abrir app | `POST /launch/<id>` | Documentado |
+| Entrada de texto | `POST /keypress/Lit_<char>` | Documentado |
+| Enter, Backspace, Busca/voz | `POST /keypress/{Enter,Backspace,Search}` | Documentado |
+| Lista de TV ao vivo | `GET /query/tv-channels` | Testado |
+| Find Remote | `POST /keypress/FindRemote` | Nao suportado (`supports-find-remote=false`) |
+| Audio no celular (private listening) | Stream SAS | Requer RE (fora da ECP) |
 
-## Engenharia reversa (private listening)
+Enviar um comando sem erro HTTP nao prova o efeito na tela; itens "Documentado" aguardam validacao
+botao a botao.
 
-Ferramentas instaladas em `C:\DEV_BOX_DEPENDENCIAS\tools\re` (JDK 21, jadx 1.5.6, Ghidra 12.1.4, ReVa).
-MCPs registrados em escopo de usuário:
-- **jadx** (stdio): decompila o APK oficial Roku (Java/Kotlin). Requer jadx-gui aberto com o APK.
-- **ReVa** (HTTP :8080): analisa bibliotecas nativas `.so`. Requer Ghidra aberto com a extensão habilitada.
+## Pre-requisitos da TV
 
-Pendência: obter o **APK oficial do app Roku** para mapear o protocolo de áudio SAS. Sem ele, o recurso
-"ouvir pela TV no celular" não pode ser implementado com segurança.
+Em Ajustes, Sistema, Configuracoes avancadas, Controle por apps de rede deve estar habilitado
+(obrigatorio a partir do Roku OS 14.1 para `keypress`, `query/tv-channels` e `query/icon`).
 
-## Limitações conhecidas
+## Build
 
-- Comandos ECP são política de "não usar em apps de terceiros" da Roku (publicação em loja); em LAN doméstica funcionam. Uso pessoal.
-- Power On só via Wake-on-LAN; depende de a TV ter WoL ativo e do MAC (preenchível na config).
-- Cleartext HTTP liberado (ECP é HTTP); o app não faz tráfego externo.
+Toolchain em container (Android SDK API 36 + JDK 21 + Gradle). Debug:
+
+    ./gradlew assembleDebug testDebugUnitTest
+
+Release assinado (requer `keystore.properties` e o keystore locais, nao versionados):
+
+    ./gradlew assembleRelease
+
+Saidas em `app/build/outputs/apk/`.
+
+### Assinatura
+
+Crie `keystore.properties` na raiz (fora do controle de versao):
+
+    storeFile=keystore/rokucontrol.jks
+    storePassword=...
+    keyAlias=rokucontrol
+    keyPassword=...
+
+Sem esse arquivo, `assembleRelease` gera um APK nao assinado.
+
+## Instalacao
+
+1. Baixe o APK da release ou gere com `assembleRelease`.
+2. Copie para o aparelho e abra; permita "instalar apps desconhecidos" quando solicitado.
+3. Ao trocar entre debug e release, desinstale a versao anterior (assinatura diferente).
+4. Conecte o celular na mesma rede da TV, abra o app e use "Procurar na rede" ou informe o IP.
+
+## Permissoes
+
+`INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`, `CHANGE_WIFI_MULTICAST_STATE` (SSDP),
+`VIBRATE` (retorno tatil). Trafego apenas na rede local; nenhum dado sai para servicos externos.
+
+## Limitacoes
+
+- Ajustes da TV nao tem endpoint ECP dedicado; sao acessados navegando a partir do botao Inicio.
+- Ligar a TV depende de Wake-on-LAN ativo e do MAC do aparelho.
+- A ECP e HTTP em texto claro; a configuracao de seguranca de rede libera apenas esse trafego local.
+- Private listening nao e documentado na ECP e nao esta implementado.
+
+## Licenca
+
+Uso pessoal.
