@@ -1,0 +1,29 @@
+# Android / Gradle
+*.iml
+.gradle/
+build/
+app/build/
+local.properties
+.cxx/
+captures/
+
+# IDE
+.idea/
+*.hprof
+
+# Assinatura / segredos (NUNCA versionar)
+keystore/
+keystore.properties
+*.jks
+*.keystore
+
+# APK/artefatos locais
+*.apk
+*.aab
+
+# Claude / tarefas locais
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

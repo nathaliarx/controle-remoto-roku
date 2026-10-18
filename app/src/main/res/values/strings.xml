@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">RokuControl</string>
+    <string name="connect_title">Conectar à TV</string>
+    <string name="discover">Procurar na rede</string>
+    <string name="manual_ip">Informar IP manualmente</string>
+    <string name="ip_hint">Ex.: 192.168.0.2</string>
+    <string name="connect">Conectar</string>
+    <string name="connected">Conectado</string>
+    <string name="disconnected">Sem conexão</string>
+    <string name="searching">Procurando dispositivos…</string>
+    <string name="no_devices">Nenhuma Roku encontrada. Informe o IP manualmente.</string>
+    <string name="tab_remote">Controle</string>
+    <string name="tab_apps">Apps</string>
+    <string name="tab_tv">TV ao vivo</string>
+    <string name="tab_keyboard">Teclado</string>
+    <string name="keyboard_hint">Digite para enviar à TV</string>
+    <string name="send">Enviar</string>
+    <string name="error_network">Falha de rede. Verifique o Wi-Fi e o IP.</string>
+</resources>

@@ -1,0 +1,31 @@
+package com.nathalia.rokuremote.model
+
+enum class RemoteKey(val ecp: String) {
+    HOME("Home"),
+    BACK("Back"),
+    UP("Up"),
+    DOWN("Down"),
+    LEFT("Left"),
+    RIGHT("Right"),
+    SELECT("Select"),
+    INSTANT_REPLAY("InstantReplay"),
+    INFO("Info"),
+    REWIND("Rev"),
+    FORWARD("Fwd"),
+    PLAY("Play"),
+    ENTER("Enter"),
+    BACKSPACE("Backspace"),
+    VOLUME_UP("VolumeUp"),
+    VOLUME_DOWN("VolumeDown"),
+    VOLUME_MUTE("VolumeMute"),
+    POWER_OFF("PowerOff"),
+    POWER_ON("PowerOn"),
+    CHANNEL_UP("ChannelUp"),
+    CHANNEL_DOWN("ChannelDown"),
+    INPUT_TUNER("InputTuner"),
+    INPUT_HDMI1("InputHDMI1"),
+    INPUT_HDMI2("InputHDMI2"),
+    INPUT_HDMI3("InputHDMI3"),
+    INPUT_AV1("InputAV1"),
+    SEARCH("Search")
+}
